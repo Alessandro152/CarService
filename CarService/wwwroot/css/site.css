@@ -1,0 +1,37 @@
+﻿body {
+    background: url("../Imagens/fusca.jpeg");
+    background-repeat: repeat;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+label {
+    color: black;
+    font-size: 13px;
+    margin: 1px;
+}
+
+.form-group {
+    background: #e5e7e9;
+    width: 470px;
+    padding: 5px 5px;
+    margin: 10px auto;
+}
+
+.form-control {
+    text-align: center;
+}
+
+.repair {
+    margin-left: 10%;
+    font-size: 12px;
+}
+
+.btn {
+    margin: 10px auto;
+    transition: 0.65s;
+}
+
+.btn:hover {
+    width: 200px;
+}

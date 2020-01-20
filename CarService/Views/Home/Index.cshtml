@@ -1,0 +1,79 @@
+﻿@model CarService.Models.QueryStack.ViewModels.GlobalViewModel
+
+@{
+    ViewBag.Title = "Início";
+}
+
+<fieldset class="form-group">
+    <div class="container-fluid">
+        @if (ViewBag.Alert != string.Empty && ViewBag.Alert != null)
+        {
+            <script type="text/javascript">
+                    alert('@ViewBag.Alert');
+            </script>
+        }
+        <h4 style="text-align:center">Serviço de agendamento de manutenção - Coelho's garage</h4>
+        <h5 style="text-align:center">Insira seus dados e de seu veículo abaixo</h5>
+        @using (Html.BeginForm("SaveData", "Home", FormMethod.Post))
+        {
+            <div class="form-row">
+                <div class="col-sm-6 col-md-6">
+                    <div>
+                        <label>Nome</label>
+                    </div>
+                    @Html.TextBoxFor(m => m.Cliente.Nome, new { @class = "form-control form-control-sm", @required = "required", placeholder = "Nome Completo", autocomplete = "off" })
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-6 col-md-6">
+                    <div>
+                        <label>E-Mail</label>
+                    </div>
+                    @Html.TextBoxFor(m => m.Cliente.EMail, new { @type = "email", @class = "form-control form-control-sm", @required = "required", placeholder = "seuemail@dominio.com.br", autocomplete = "off" })
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <div>
+                        <label>Telefone</label>
+                    </div>
+                    @Html.TextBoxFor(m => m.Cliente.Telefone, new { @type = "tel", @class = "form-control form-control-sm", @required = "required", placeholder = "(00) 00000-0000", autocomplete = "off" })
+                </div>
+            </div>
+            <hr />
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <div>
+                        <label>Marca</label>
+                    </div>
+                    @Html.DropDownListFor(m => m.Veiculo.Marca, Model.VeiculoMarca, "Selecione a Marca", new { @class = "form-control form-control-sm" })
+                </div>
+                <div class="col-sm-6">
+                    <label>Modelo</label>
+                    @Html.DropDownListFor(m => m.Veiculo.Modelo, Model.VeiculoModelo, "Selecione o Modelo", new { @class = "form-control form-control-sm" })
+                </div>
+                <div class="col-sm-6">
+                    <label>Ano</label>
+                    @Html.DropDownListFor(m => m.Veiculo.AnoVeiculo, Model.VeiculoAno, "Selecione o Ano", new { @class = "form-control form-control-sm" })
+                </div>
+                <div class="col-sm-6">
+                    <label>Data para manutenção</label>
+                    @Html.TextBoxFor(m => m.Servico.DataManutencao, new { @type = "date", @class = "form-control form-control-sm", @required = "required" })
+                </div>
+            </div>
+            <hr />
+            <h6 style="text-align:center">Serviços a serem realizados</h6>
+            <div class="form-row">
+                <div class="repair">
+                    <div class="col">
+                        @Html.CheckBoxFor(m => m.Servico.Completo) Completo
+                        @Html.CheckBoxFor(m => m.Servico.Mecanica) Mecânica/ Elétrica
+                        @Html.CheckBoxFor(m => m.Servico.Suspensao) Suspensão
+                        @Html.CheckBoxFor(m => m.Servico.Freio) Freio
+                    </div>
+                </div>
+                <input class="btn btn-outline-dark" type="submit" value="Agendar">
+            </div>
+        }
+    </div>
+</fieldset>
+
+
