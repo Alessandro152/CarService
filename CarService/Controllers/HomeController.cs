@@ -37,7 +37,7 @@ namespace CarService.Controllers
 
             if (result == CAPACIDADE_MAXIMA)
             {
-                ViewBag.Alert = "Infelizmente estou com agenda cheia para " + RetornarDataManutencao(dados) + ". Escolha outra data.";
+                _lista.AgendaCheia = true;
                 return View("Index", _lista);
             }
             else
@@ -45,14 +45,8 @@ namespace CarService.Controllers
                 _appService.AgendarManutencao(dados);
                 _appService.EnviarEmail(dados);
 
-                ViewBag.Alert = "Agendamento realizado com sucesso";
                 return RedirectToAction("Index");
             }
-        }
-
-        private string RetornarDataManutencao(GlobalViewModel dados)
-        {
-            return dados.Servico.DataManutencao.Substring(6, 2) + "/" + dados.Servico.DataManutencao.Substring(4, 2) + "/" + dados.Servico.DataManutencao.Substring(0, 4);
         }
     }
 }

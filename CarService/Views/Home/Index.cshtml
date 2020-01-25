@@ -18,6 +18,12 @@
         {
             <div class="form-row">
                 <div class="col-sm-6 col-md-6">
+                    @if (Model.AgendaCheia == true)
+                    {
+                        <div style="background: red; color: whitesmoke; border-radius: 10px; width: 360px; text-align: center;">
+                            <p>Infelizmente estou sem agenda disponível para este dia. Escolha outra data.</p>
+                        </div>
+                    }
                     <div>
                         <label>Nome</label>
                     </div>

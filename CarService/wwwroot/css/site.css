@@ -13,7 +13,7 @@ label {
 
 .form-group {
     background: #e5e7e9;
-    width: 470px;
+    width: 420px;
     padding: 5px 5px;
     margin: 10px auto;
 }
@@ -34,4 +34,12 @@ label {
 
 .btn:hover {
     width: 200px;
+}
+
+.warningAlert {
+    background: red;
+    color: whitesmoke;
+    border-radius: 24px;
+    width: 360px; 
+    text-align: center;
 }
