@@ -18,7 +18,9 @@ namespace CarService.Controllers
             {
                 VeiculoMarca = _appService.PopularMarca(),
                 VeiculoModelo = _appService.PopularModelo(),
-                VeiculoAno = _appService.PopularAno()
+                VeiculoAno = _appService.PopularAno(),
+                AgendaCheia = lista.AgendaCheia,
+                AgendaVazia = lista.AgendaVazia
             };
 
             _lista = lista;
@@ -42,10 +44,11 @@ namespace CarService.Controllers
             }
             else
             {
+                _lista.AgendaVazia = true;
                 _appService.AgendarManutencao(dados);
                 _appService.EnviarEmail(dados);
 
-                return RedirectToAction("Index");
+                return View("Index", _lista);
             }
         }
     }

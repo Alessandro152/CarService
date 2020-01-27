@@ -24,6 +24,12 @@
                             <p>Infelizmente estou sem agenda disponível para este dia. Escolha outra data.</p>
                         </div>
                     }
+                    @if (Model.AgendaVazia == true)
+                    {
+                        <div style="background: green; color: whitesmoke; border-radius: 10px; width: 360px; text-align: center;">
+                            <p>Agendamento realizado com Sucesso!!</p>
+                        </div>
+                    }
                     <div>
                         <label>Nome</label>
                     </div>
