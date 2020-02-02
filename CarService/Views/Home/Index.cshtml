@@ -12,22 +12,28 @@
                     alert('@ViewBag.Alert');
             </script>
         }
-        <h4 style="text-align:center">Serviço de agendamento de manutenção - Coelho's garage</h4>
+        <h4 style="text-align:center">Serviço de agendamento de manutenção</h4>
         <h5 style="text-align:center">Insira seus dados e de seu veículo abaixo</h5>
         @using (Html.BeginForm("SaveData", "Home", FormMethod.Post))
         {
             <div class="form-row">
                 <div class="col-sm-6 col-md-6">
-                    @if (Model.AgendaCheia == true)
+                    @if (Model.AgendaCheia)
                     {
                         <div style="background: red; color: whitesmoke; border-radius: 10px; width: 360px; text-align: center;">
-                            <p>Infelizmente estou sem agenda disponível para este dia. Escolha outra data.</p>
+                            <p>Infelizmente estou sem agenda disponível para este mês. Escolha outra data em outro mês.</p>
                         </div>
                     }
-                    @if (Model.AgendaVazia == true)
+                    @if (Model.AgendaVazia)
                     {
                         <div style="background: green; color: whitesmoke; border-radius: 10px; width: 360px; text-align: center;">
                             <p>Agendamento realizado com Sucesso!!</p>
+                        </div>
+                    }
+                    @if (Model.Domingo)
+                    {
+                        <div style="background: red; color: whitesmoke; border-radius: 10px; width: 360px; text-align: center;">
+                            <p>Infelizmente não é possível agendar serviço aos domingos. Escolha outra data.</p>
                         </div>
                     }
                     <div>

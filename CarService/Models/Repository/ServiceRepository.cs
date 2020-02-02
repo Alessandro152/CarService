@@ -15,7 +15,7 @@ namespace CarService.Models.Repository
         private MySqlConnection DatabaseConnection { get; set; }
         private MySqlDataReader Reader { get; set; }
 
-        public int VerificarDataManutencao(string data)
+        public int VerificarDataManutencao(DateTime data)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace CarService.Models.Repository
                 Comm.CommandText = "USE CARSERVICE";
                 Comm.ExecuteNonQuery();
 
-                Comm.CommandText = "SELECT COUNT(*) FROM SERVICO WHERE MANUTENCAO_DATA = " + data;
+                Comm.CommandText = "SELECT COUNT(*) FROM SERVICO WHERE MANUTENCAO_DATA LIKE '%" + data.Year + "/" + data.Month +"%'" ;
 
                 return int.Parse(Comm.ExecuteScalar().ToString());
             }
@@ -39,7 +39,7 @@ namespace CarService.Models.Repository
             {
                 if (DatabaseConnection.State == ConnectionState.Open)
                 {
-                    DatabaseConnection.Close();
+                    DatabaseConnection.Dispose();
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace CarService.Models.Repository
             {
                 if (DatabaseConnection.State == ConnectionState.Open)
                 {
-                    DatabaseConnection.Close();
+                    DatabaseConnection.Dispose();
                 }
             }
         }
@@ -124,7 +124,7 @@ namespace CarService.Models.Repository
             {
                 if (DatabaseConnection.State == ConnectionState.Open)
                 {
-                    DatabaseConnection.Close();
+                    DatabaseConnection.Dispose();
                 }
             }
 
@@ -166,7 +166,7 @@ namespace CarService.Models.Repository
             {
                 if (DatabaseConnection.State == ConnectionState.Open)
                 {
-                    DatabaseConnection.Close();
+                    DatabaseConnection.Dispose();
                 }
             }
 
@@ -208,7 +208,7 @@ namespace CarService.Models.Repository
             {
                 if (DatabaseConnection.State == ConnectionState.Open)
                 {
-                    DatabaseConnection.Close();
+                    DatabaseConnection.Dispose();
                 }
             }
 

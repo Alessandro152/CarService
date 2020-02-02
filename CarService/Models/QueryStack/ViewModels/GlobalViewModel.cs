@@ -11,5 +11,8 @@ namespace CarService.Models.QueryStack.ViewModels
         public ClienteViewModel Cliente { get; set; }
         public VeiculoViewModel Veiculo { get; set; }
         public ServicoViewModel Servico { get; set; }
+        public bool Domingo { get; internal set; }
+        public bool AgendaCheia { get; internal set; }
+        public bool AgendaVazia { get; internal set; }
     }
 }

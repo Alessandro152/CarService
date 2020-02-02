@@ -1,6 +1,7 @@
 ﻿using CarService.Models.QueryStack.ViewModels;
 using CarService.Models.ServiceStack.Interface;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace CarService.Controllers
 {
@@ -8,7 +9,7 @@ namespace CarService.Controllers
     {
         private readonly IAppServiceHandler _appService;
         private readonly GlobalViewModel _lista;
-        private const int CAPACIDADE_MAXIMA = 5;
+        private const int CAPACIDADE_MAXIMA = 10;
 
         public HomeController(IAppServiceHandler appServiceHandler, GlobalViewModel lista)
         {
@@ -34,8 +35,7 @@ namespace CarService.Controllers
         [HttpPost]
         public ActionResult SaveData(GlobalViewModel dados)
         {
-            dados.Servico.DataManutencao = dados.Servico.DataManutencao.Replace("-", "");
-            var result = _appService.VerificarDataManutencao(dados.Servico.DataManutencao);
+            int result = _appService.VerificarDataManutencao(dados.Servico.DataManutencao);
 
             if (result == CAPACIDADE_MAXIMA)
             {
@@ -44,6 +44,12 @@ namespace CarService.Controllers
             }
             else
             {
+                if (dados.Servico.DataManutencao.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    _lista.Domingo = true;
+                    return View("Index", _lista);
+                }
+
                 _lista.AgendaVazia = true;
                 _appService.AgendarManutencao(dados);
                 _appService.EnviarEmail(dados);
