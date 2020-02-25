@@ -14,5 +14,6 @@ namespace CarService.Models.ServiceStack.Interface
         List<SelectListItem> PopularModelo();
         List<SelectListItem> PopularAno();
         int VerificarDataManutencao(DateTime dataManutencao);
+        void EnviarEmailCliente(GlobalViewModel dados);
     }
 }

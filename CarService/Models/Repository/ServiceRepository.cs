@@ -27,7 +27,7 @@ namespace CarService.Models.Repository
                 Comm.CommandText = "USE CARSERVICE";
                 Comm.ExecuteNonQuery();
 
-                Comm.CommandText = "SELECT COUNT(*) FROM SERVICO WHERE MANUTENCAO_DATA LIKE '%" + data.Year + "/" + data.Month +"%'" ;
+                Comm.CommandText = "SELECT COUNT(*) FROM SERVICO WHERE MANUTENCAO_DATA LIKE '%" + data.Year.ToString() + "/" + data.Month.ToString() +"%'" ;
 
                 return int.Parse(Comm.ExecuteScalar().ToString());
             }

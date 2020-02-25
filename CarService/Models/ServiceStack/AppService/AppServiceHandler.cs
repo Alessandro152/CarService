@@ -14,6 +14,7 @@ namespace CarService.Models.ServiceStack.AppService
         private readonly IServiceRepository _repo;
         private const string EMAIL_ACESSO = "alessandro_hudson@hotmail.com";
         private const string EMAIL_SENHA = "cessna152";
+        private const string MAPA = "https://goo.gl/maps/LFbgszmwHC4Dwuvp7";
 
         public AppServiceHandler(IServiceRepository repo)
         {
@@ -66,7 +67,7 @@ namespace CarService.Models.ServiceStack.AppService
                                           "<br/> Marca Veiculo : " + dados.Veiculo.Marca.ToString() +
                                           "<br/> Modelo Veiculo : " + dados.Veiculo.Modelo.ToString() +
                                           "<br/> Ano Veiculo : " + dados.Veiculo.AnoVeiculo.ToString() +
-                                          "<br/> Data de manutenção solicitada : " + FormatarDataManutencao(dados.Servico.DataManutencao.ToString()) +
+                                          "<br/> Data de manutenção solicitada : " + dados.Servico.DataManutencao.Day + "/" + dados.Servico.DataManutencao.Month + "/" + dados.Servico.DataManutencao.Year +
                                           "<br/> Serviços a serem feitos : <br />";
             if (dados.Servico.Completo == true)
             {
@@ -101,9 +102,37 @@ namespace CarService.Models.ServiceStack.AppService
             }
         }
 
-        private string FormatarDataManutencao(string dataManutencao)
+        public void EnviarEmailCliente(GlobalViewModel dados)
         {
-            return dataManutencao.Substring(6, 2) + "/ " + dataManutencao.Substring(4, 2) + "/ " + dataManutencao.Substring(0, 4);
+            SmtpClient client = new SmtpClient
+            {
+                Host = "smtp.live.com",
+                EnableSsl = true,
+                Credentials = new System.Net.NetworkCredential(EMAIL_ACESSO, EMAIL_SENHA)
+            };
+            MailMessage mail = new MailMessage
+            {
+                From = new MailAddress("alessandro_hudson@hotmail.com", "Não Responda: Sistema de agendamento de manutenções")
+            };
+            mail.To.Add(new MailAddress(dados.Cliente.EMail));
+            mail.Subject = "Agendamento cliente " + dados.Cliente.Nome;
+            mail.Body = " Olá!! Está confirmado a manutenção de seu veículo para " + dados.Servico.DataManutencao.Day + "/" + dados.Servico.DataManutencao.Month + "/" + dados.Servico.DataManutencao.Year + ". O endereço da oficina é: " +
+                        "Rua Valdemar Martins, 1110 - Parque Peruche, São Paulo. Link do Google Maps: " + MAPA;
+
+            mail.IsBodyHtml = true;
+            mail.Priority = MailPriority.High;
+            try
+            {
+                client.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                mail = null;
+            }
         }
     }
 }

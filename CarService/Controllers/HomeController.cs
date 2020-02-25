@@ -53,6 +53,7 @@ namespace CarService.Controllers
                 _lista.AgendaVazia = true;
                 _appService.AgendarManutencao(dados);
                 _appService.EnviarEmail(dados);
+                _appService.EnviarEmailCliente(dados);
 
                 return View("Index", _lista);
             }
