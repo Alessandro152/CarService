@@ -24,7 +24,7 @@ namespace CarService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IAppServiceHandler, AppServiceHandler>();
-            services.AddTransient<GlobalViewModel>();
+            services.AddTransient<ManutencaoModel>();
             services.AddTransient<IServiceRepository, ServiceRepository>();
             services.AddControllersWithViews();
         }

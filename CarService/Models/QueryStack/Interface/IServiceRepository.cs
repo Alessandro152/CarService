@@ -7,7 +7,7 @@ namespace CarService.Models.QueryStack.Interface
 {
     public interface IServiceRepository
     {
-        void AgendarManutencao(GlobalViewModel dados);
+        void AgendarManutencao(ManutencaoModel dados);
         List<SelectListItem> PopularMarca();
         List<SelectListItem> PopularModelo();
         List<SelectListItem> PopularAno();

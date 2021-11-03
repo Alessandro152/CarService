@@ -8,12 +8,12 @@ namespace CarService.Models.ServiceStack.Interface
 {
     public interface IAppServiceHandler
     {
-        void AgendarManutencao(GlobalViewModel dados);
-        void EnviarEmail(GlobalViewModel dados);
+        void AgendarManutencao(ManutencaoModel dados);
+        void EnviarEmail(ManutencaoModel dados);
         List<SelectListItem> PopularMarca();
         List<SelectListItem> PopularModelo();
         List<SelectListItem> PopularAno();
         int VerificarDataManutencao(DateTime dataManutencao);
-        void EnviarEmailCliente(GlobalViewModel dados);
+        void EnviarEmailCliente(ManutencaoModel dados);
     }
 }

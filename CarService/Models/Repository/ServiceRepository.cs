@@ -5,11 +5,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace CarService.Models.Repository
 {
-    public class ServiceRepository : IServiceRepository
+    public class ServiceRepository : IServiceRepository, IDisposable
     {
         private MySqlConnection connect;
         private MySqlConnection DatabaseConnection { get; set; }
@@ -27,7 +26,7 @@ namespace CarService.Models.Repository
                 Comm.CommandText = "USE CARSERVICE";
                 Comm.ExecuteNonQuery();
 
-                Comm.CommandText = "SELECT COUNT(*) FROM SERVICO WHERE MANUTENCAO_DATA LIKE '%" + data.Year.ToString() + "/" + data.Month.ToString() +"%'" ;
+                Comm.CommandText = $"SELECT COUNT(1) FROM SERVICO WHERE MANUTENCAO_DATA LIKE '%{data.Year}/{ data.Month}%'";
 
                 return int.Parse(Comm.ExecuteScalar().ToString());
             }
@@ -35,16 +34,9 @@ namespace CarService.Models.Repository
             {
                 throw new Exception(ex.Message);
             }
-            finally
-            {
-                if (DatabaseConnection.State == ConnectionState.Open)
-                {
-                    DatabaseConnection.Dispose();
-                }
-            }
         }
 
-        public void AgendarManutencao(GlobalViewModel dados)
+        public void AgendarManutencao(ManutencaoModel dados)
         {
             try
             {
@@ -80,13 +72,6 @@ namespace CarService.Models.Repository
             {
                 throw new Exception(ex.Message);
             }
-            finally
-            {
-                if (DatabaseConnection.State == ConnectionState.Open)
-                {
-                    DatabaseConnection.Dispose();
-                }
-            }
         }
 
         public List<SelectListItem> PopularMarca()
@@ -103,7 +88,7 @@ namespace CarService.Models.Repository
                 Comm.CommandText = "USE CARSERVICE";
                 Comm.ExecuteNonQuery();
 
-                Comm.CommandText = "SELECT * FROM VEICULO_MARCA ORDER BY MARCA_NOME ASC";
+                Comm.CommandText = "SELECT TOP 1 FROM VEICULO_MARCA ORDER BY MARCA_NOME ASC";
 
                 Reader = Comm.ExecuteReader();
 
@@ -119,13 +104,6 @@ namespace CarService.Models.Repository
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
-            }
-            finally
-            {
-                if (DatabaseConnection.State == ConnectionState.Open)
-                {
-                    DatabaseConnection.Dispose();
-                }
             }
 
             return items;
@@ -162,13 +140,6 @@ namespace CarService.Models.Repository
             {
                 throw new Exception(ex.Message);
             }
-            finally
-            {
-                if (DatabaseConnection.State == ConnectionState.Open)
-                {
-                    DatabaseConnection.Dispose();
-                }
-            }
 
             return items;
         }
@@ -187,7 +158,7 @@ namespace CarService.Models.Repository
                 Comm.CommandText = "USE CARSERVICE";
                 Comm.ExecuteNonQuery();
 
-                Comm.CommandText = "SELECT * FROM VEICULO_ANO ORDER BY VEICULO_ANO ASC";
+                Comm.CommandText = "SELECT TOP 1 FROM VEICULO_ANO ORDER BY VEICULO_ANO ASC";
 
                 Reader = Comm.ExecuteReader();
 
@@ -203,13 +174,6 @@ namespace CarService.Models.Repository
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
-            }
-            finally
-            {
-                if (DatabaseConnection.State == ConnectionState.Open)
-                {
-                    DatabaseConnection.Dispose();
-                }
             }
 
             return items;
@@ -233,6 +197,11 @@ namespace CarService.Models.Repository
             }
 
             return connect;
+        }
+
+        public void Dispose()
+        {
+            DatabaseConnection.Dispose();
         }
     }
 }

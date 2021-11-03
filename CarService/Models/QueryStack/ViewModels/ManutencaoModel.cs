@@ -6,7 +6,7 @@ using CarService.Models.ViewModels.Veiculo;
 
 namespace CarService.Models.QueryStack.ViewModels
 {
-    public class GlobalViewModel : VeiculoMarcaViewModel
+    public class ManutencaoModel : VeiculoMarcaViewModel
     {
         public ClienteViewModel Cliente { get; set; }
         public VeiculoViewModel Veiculo { get; set; }

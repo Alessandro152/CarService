@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Net.Mail;
+using CarService.Models.Resources;
+using System.Text;
 
 namespace CarService.Models.ServiceStack.AppService
 {
@@ -14,7 +16,6 @@ namespace CarService.Models.ServiceStack.AppService
         private readonly IServiceRepository _repo;
         private const string EMAIL_ACESSO = "alessandro_hudson@hotmail.com";
         private const string EMAIL_SENHA = "cessna152";
-        private const string MAPA = "https://goo.gl/maps/LFbgszmwHC4Dwuvp7";
 
         public AppServiceHandler(IServiceRepository repo)
         {
@@ -26,7 +27,7 @@ namespace CarService.Models.ServiceStack.AppService
             return _repo.VerificarDataManutencao(data);
         }
 
-        public void AgendarManutencao(GlobalViewModel dados)
+        public void AgendarManutencao(ManutencaoModel dados)
         {
             _repo.AgendarManutencao(dados);
         }
@@ -46,7 +47,7 @@ namespace CarService.Models.ServiceStack.AppService
             return _repo.PopularAno();
         }
 
-        public void EnviarEmail(GlobalViewModel dados)
+        public void EnviarEmail(ManutencaoModel dados)
         {
             SmtpClient client = new SmtpClient
             {
@@ -59,33 +60,36 @@ namespace CarService.Models.ServiceStack.AppService
                 From = new MailAddress("alessandro_hudson@hotmail.com", "Sistema de agendamento de manutenções")
             };
             mail.To.Add(new MailAddress("alessandro_hudson@hotmail.com"));
-            mail.Subject = "Agendamento cliente " + dados.Cliente.Nome;
-            mail.Body = " Olá!! Abaixo segue dados do cliente que agendou manutenção de seu carango : <br/><br/>" +
-                                          "Dados do cliente :<br/> Nome:  " + dados.Cliente.Nome +
-                                          "<br/> Email : " + dados.Cliente.EMail +
-                                          "<br/> Telefone : " + dados.Cliente.Telefone +
-                                          "<br/> Marca Veiculo : " + dados.Veiculo.Marca.ToString() +
-                                          "<br/> Modelo Veiculo : " + dados.Veiculo.Modelo.ToString() +
-                                          "<br/> Ano Veiculo : " + dados.Veiculo.AnoVeiculo.ToString() +
-                                          "<br/> Data de manutenção solicitada : " + dados.Servico.DataManutencao.Day + "/" + dados.Servico.DataManutencao.Month + "/" + dados.Servico.DataManutencao.Year +
-                                          "<br/> Serviços a serem feitos : <br />";
-            if (dados.Servico.Completo == true)
+            mail.Subject = $"Agendamento cliente {dados.Cliente.Nome}";
+
+            var texto = new StringBuilder($@"Olá!! Abaixo segue dados do cliente que agendou manutenção de seu carango: 
+                                          Dados do cliente:
+                                          Nome: {dados.Cliente.Nome}
+                                          Email: {dados.Cliente.EMail} 
+                                          Telefone: {dados.Cliente.Telefone}
+                                          Marca Veiculo: {dados.Veiculo.Marca}
+                                          Modelo Veiculo: {dados.Veiculo.Modelo}
+                                          Ano Veiculo: {dados.Veiculo.AnoVeiculo}
+                                          Data de manutenção solicitada: {dados.Servico.DataManutencao.Day}/{dados.Servico.DataManutencao.Month}/{dados.Servico.DataManutencao.Year}
+                                          Serviços a serem feitos: ");
+            if (dados.Servico.Completo)
             {
-                mail.Body += "- Serviço completo <br/>";
+               texto.Append("- Serviço completo");
             }
-            if (dados.Servico.Mecanica == true)
+            if (dados.Servico.Mecanica)
             {
-                mail.Body += "- Serviço de mecânica <br />";
+                texto.Append("- Serviço de mecânica");
             }
-            if (dados.Servico.Suspensao == true)
+            if (dados.Servico.Suspensao)
             {
-                mail.Body += "- Serviço de suspensão <br />";
+                texto.Append("- Serviço de suspensão");
             }
-            if (dados.Servico.Freio == true)
+            if (dados.Servico.Freio)
             {
-                mail.Body += "- Serviço de freio";
+                texto.Append("- Serviço de freio");
             }
 
+            mail.Body = texto.ToString();
             mail.IsBodyHtml = true;
             mail.Priority = MailPriority.High;
             try
@@ -96,13 +100,9 @@ namespace CarService.Models.ServiceStack.AppService
             {
                 throw new Exception(ex.Message);
             }
-            finally
-            {
-                mail = null;
-            }
         }
 
-        public void EnviarEmailCliente(GlobalViewModel dados)
+        public void EnviarEmailCliente(ManutencaoModel dados)
         {
             SmtpClient client = new SmtpClient
             {
@@ -110,17 +110,19 @@ namespace CarService.Models.ServiceStack.AppService
                 EnableSsl = true,
                 Credentials = new System.Net.NetworkCredential(EMAIL_ACESSO, EMAIL_SENHA)
             };
+
             MailMessage mail = new MailMessage
             {
                 From = new MailAddress("alessandro_hudson@hotmail.com", "Não Responda: Sistema de agendamento de manutenções")
             };
+
             mail.To.Add(new MailAddress(dados.Cliente.EMail));
-            mail.Subject = "Agendamento cliente " + dados.Cliente.Nome;
-            mail.Body = " Olá!! Está confirmado a manutenção de seu veículo para " + dados.Servico.DataManutencao.Day + "/" + dados.Servico.DataManutencao.Month + "/" + dados.Servico.DataManutencao.Year + ". O endereço da oficina é: " +
-                        "Rua Valdemar Martins, 1110 - Parque Peruche, São Paulo. Link do Google Maps: " + MAPA;
+            mail.Subject = $"Agendamento cliente {dados.Cliente.Nome}";
+            mail.Body = $"{MessageResource.MensagemEndereco}{MessageResource.EnderecoMapa}";
 
             mail.IsBodyHtml = true;
             mail.Priority = MailPriority.High;
+
             try
             {
                 client.Send(mail);

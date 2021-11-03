@@ -8,14 +8,14 @@ namespace CarService.Controllers
     public class HomeController : Controller
     {
         private readonly IAppServiceHandler _appService;
-        private readonly GlobalViewModel _lista;
+        private readonly ManutencaoModel _lista;
         private const int CAPACIDADE_MAXIMA = 10;
 
-        public HomeController(IAppServiceHandler appServiceHandler, GlobalViewModel lista)
+        public HomeController(IAppServiceHandler appServiceHandler, ManutencaoModel lista)
         {
             _appService = appServiceHandler;
 
-            lista = new GlobalViewModel()
+            lista = new ManutencaoModel()
             {
                 VeiculoMarca = _appService.PopularMarca(),
                 VeiculoModelo = _appService.PopularModelo(),
@@ -33,7 +33,7 @@ namespace CarService.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveData(GlobalViewModel dados)
+        public ActionResult SaveData(ManutencaoModel dados)
         {
             int result = _appService.VerificarDataManutencao(dados.Servico.DataManutencao);
 

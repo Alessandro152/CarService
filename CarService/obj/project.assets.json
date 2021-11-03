@@ -5701,23 +5701,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\joaop_000\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Prosoft\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\joaop_000\\Desktop\\Fonts.NET\\CarService\\CarService\\CarService\\CarService.csproj",
+      "projectUniqueName": "C:\\Fontes\\Projetos Alessandro\\.NET\\CarService\\CarService\\CarService.csproj",
       "projectName": "CarService",
-      "projectPath": "C:\\Users\\joaop_000\\Desktop\\Fonts.NET\\CarService\\CarService\\CarService\\CarService.csproj",
-      "packagesPath": "C:\\Users\\joaop_000\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\joaop_000\\Desktop\\Fonts.NET\\CarService\\CarService\\CarService\\obj\\",
+      "projectPath": "C:\\Fontes\\Projetos Alessandro\\.NET\\CarService\\CarService\\CarService.csproj",
+      "packagesPath": "C:\\Users\\Prosoft\\.nuget\\packages\\",
+      "outputPath": "C:\\Fontes\\Projetos Alessandro\\.NET\\CarService\\CarService\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\joaop_000\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Prosoft\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5725,10 +5726,13 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {},
+        "https://tfscloud.prosoft.com.br/tfs/Wolters_Kluwer_Prosoft/_packaging/NugetServer/nuget/v3/index.json": {},
+        "https://tfscloud.prosoft.com.br:2108/nuget/": {}
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "projectReferences": {}
         }
       },
@@ -5740,6 +5744,7 @@
     },
     "frameworks": {
       "netcoreapp3.1": {
+        "targetAlias": "netcoreapp3.1",
         "dependencies": {
           "MySql.Data": {
             "target": "Package",
@@ -5764,7 +5769,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.204\\RuntimeIdentifierGraph.json"
       }
     }
   }
