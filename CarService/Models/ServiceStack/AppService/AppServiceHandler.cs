@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Net.Mail;
 using CarService.Models.Resources;
 using System.Text;
+using CarService.Models.ServiceStack.Entities;
+using System.Threading.Tasks;
 
 namespace CarService.Models.ServiceStack.AppService
 {
@@ -22,9 +24,9 @@ namespace CarService.Models.ServiceStack.AppService
             _repo = repo;
         }
 
-        public int VerificarDataManutencao(DateTime data)
+        public Task<bool> RetornarOficinaCapacidadeMaxima(DateTime data)
         {
-            return _repo.VerificarDataManutencao(data);
+            return Task.FromResult(_repo.VerificarDataManutencao(data).Result);
         }
 
         public void AgendarManutencao(ManutencaoModel dados)
@@ -47,7 +49,7 @@ namespace CarService.Models.ServiceStack.AppService
             return _repo.PopularAno();
         }
 
-        public void EnviarEmail(ManutencaoModel dados)
+        public void EnviarEmail(ManutencaoViewModel dados)
         {
             SmtpClient client = new SmtpClient
             {
@@ -99,41 +101,6 @@ namespace CarService.Models.ServiceStack.AppService
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
-            }
-        }
-
-        public void EnviarEmailCliente(ManutencaoModel dados)
-        {
-            SmtpClient client = new SmtpClient
-            {
-                Host = "smtp.live.com",
-                EnableSsl = true,
-                Credentials = new System.Net.NetworkCredential(EMAIL_ACESSO, EMAIL_SENHA)
-            };
-
-            MailMessage mail = new MailMessage
-            {
-                From = new MailAddress("alessandro_hudson@hotmail.com", "Não Responda: Sistema de agendamento de manutenções")
-            };
-
-            mail.To.Add(new MailAddress(dados.Cliente.EMail));
-            mail.Subject = $"Agendamento cliente {dados.Cliente.Nome}";
-            mail.Body = $"{MessageResource.MensagemEndereco}{MessageResource.EnderecoMapa}";
-
-            mail.IsBodyHtml = true;
-            mail.Priority = MailPriority.High;
-
-            try
-            {
-                client.Send(mail);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            finally
-            {
-                mail = null;
             }
         }
     }

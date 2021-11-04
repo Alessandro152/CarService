@@ -6,13 +6,18 @@ using CarService.Models.ViewModels.Veiculo;
 
 namespace CarService.Models.QueryStack.ViewModels
 {
-    public class ManutencaoModel : VeiculoMarcaViewModel
+    public class ManutencaoViewModel
     {
         public ClienteViewModel Cliente { get; set; }
+
         public VeiculoViewModel Veiculo { get; set; }
+
         public ServicoViewModel Servico { get; set; }
-        public bool Domingo { get; internal set; }
-        public bool AgendaCheia { get; internal set; }
-        public bool AgendaVazia { get; internal set; }
+
+        public bool Domingo { get; set; }
+
+        public bool AgendaCheia { get; set; }
+
+        public bool AgendaVazia { get; set; }
     }
 }

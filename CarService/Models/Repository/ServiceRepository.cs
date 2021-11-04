@@ -1,25 +1,28 @@
 ﻿
 using CarService.Models.QueryStack.Interface;
-using CarService.Models.QueryStack.ViewModels;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using CarService.Models.ServiceStack.Entities;
+using CarService.Models.ViewModels.Veiculo;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CarService.Models.Repository
 {
     public class ServiceRepository : IServiceRepository, IDisposable
     {
         private MySqlConnection connect;
+
         private MySqlConnection DatabaseConnection { get; set; }
+
         private MySqlDataReader Reader { get; set; }
 
-        public int VerificarDataManutencao(DateTime data)
+        public Task<bool> RetornarOficinaCapacidadeMaxima(DateTime data)
         {
             try
             {
                 MySqlCommand Comm;
-                DatabaseConnection = conexaoBanco();
+                DatabaseConnection = ConectarBanco();
 
                 Comm = DatabaseConnection.CreateCommand();
 
@@ -28,7 +31,9 @@ namespace CarService.Models.Repository
 
                 Comm.CommandText = $"SELECT COUNT(1) FROM SERVICO WHERE MANUTENCAO_DATA LIKE '%{data.Year}/{ data.Month}%'";
 
-                return int.Parse(Comm.ExecuteScalar().ToString());
+                var result = int.Parse(Comm.ExecuteScalar().ToString());
+
+                return Task.FromResult(result != 10);
             }
             catch (Exception ex)
             {
@@ -41,30 +46,30 @@ namespace CarService.Models.Repository
             try
             {
                 MySqlCommand Comm;
-                DatabaseConnection = conexaoBanco();
+                DatabaseConnection = ConectarBanco();
 
                 Comm = DatabaseConnection.CreateCommand();
                 Comm.CommandText = "USE CARSERVICE";
                 Comm.ExecuteNonQuery();
 
                 Comm.CommandText = "INSERT INTO CLIENTE (NOME, EMAIL, TELEFONE) VALUES (@NOME, @EMAIL, @TELEFONE)";
-                Comm.Parameters.AddWithValue("@NOME", dados.Cliente.Nome);
-                Comm.Parameters.AddWithValue("@EMAIL", dados.Cliente.EMail);
-                Comm.Parameters.AddWithValue("@TELEFONE", dados.Cliente.Telefone);
+                Comm.Parameters.AddWithValue("@NOME", dados.ClienteNome);
+                Comm.Parameters.AddWithValue("@EMAIL", dados.ClienteEmail);
+                Comm.Parameters.AddWithValue("@TELEFONE", dados.ClienteTelefone);
                 Comm.ExecuteNonQuery();
 
                 Comm.CommandText = "INSERT INTO VEICULO (VEICULO_MARCA, VEICULO_MODELO, VEICULO_ANO) VALUES (@VEICULO_MARCA, @VEICULO_MODELO, @VEICULO_ANO)";
-                Comm.Parameters.AddWithValue("@VEICULO_MARCA", dados.Veiculo.Marca);
-                Comm.Parameters.AddWithValue("@VEICULO_MODELO", dados.Veiculo.Modelo);
-                Comm.Parameters.AddWithValue("@VEICULO_ANO", dados.Veiculo.AnoVeiculo);
+                Comm.Parameters.AddWithValue("@VEICULO_MARCA", dados.ClienteVeiculoMarca);
+                Comm.Parameters.AddWithValue("@VEICULO_MODELO", dados.ClienteVeiculoModelo);
+                Comm.Parameters.AddWithValue("@VEICULO_ANO", dados.ClienteVeiculoAno);
                 Comm.ExecuteNonQuery();
 
                 Comm.CommandText = "INSERT INTO SERVICO (SERVICO_COMPLETO, SERVICO_MECANICA, SERVICO_SUSPENSAO, SERVICO_FREIO, MANUTENCAO_DATA) VALUES (@SERVICO_COMPLETO, @SERVICO_MECANICA, @SERVICO_SUSPENSAO, @SERVICO_FREIO, @MANUTENCAO_DATA)";
-                Comm.Parameters.AddWithValue("@SERVICO_COMPLETO", dados.Servico.Completo);
-                Comm.Parameters.AddWithValue("@SERVICO_MECANICA", dados.Servico.Mecanica);
-                Comm.Parameters.AddWithValue("@SERVICO_SUSPENSAO", dados.Servico.Suspensao);
-                Comm.Parameters.AddWithValue("@SERVICO_FREIO", dados.Servico.Freio);
-                Comm.Parameters.AddWithValue("@MANUTENCAO_DATA", dados.Servico.DataManutencao);
+                Comm.Parameters.AddWithValue("@SERVICO_COMPLETO", dados.ClienteServicoCompleto);
+                Comm.Parameters.AddWithValue("@SERVICO_MECANICA", dados.ClienteServicoMecanica);
+                Comm.Parameters.AddWithValue("@SERVICO_SUSPENSAO", dados.ClienteServicoSuspensao);
+                Comm.Parameters.AddWithValue("@SERVICO_FREIO", dados.ClienteServicoFreio);
+                Comm.Parameters.AddWithValue("@MANUTENCAO_DATA", dados.DataManutencao);
                 Comm.ExecuteNonQuery();
 
             }
@@ -74,29 +79,31 @@ namespace CarService.Models.Repository
             }
         }
 
-        public List<SelectListItem> PopularMarca()
+        public IList<VeiculoViewModel> PopularMarca()
         {
-            List<SelectListItem> items = new List<SelectListItem>();
+            var items = new List<VeiculoViewModel>();
 
             try
             {
                 MySqlCommand Comm;
-                DatabaseConnection = conexaoBanco();
+                DatabaseConnection = ConectarBanco();
 
                 Comm = DatabaseConnection.CreateCommand();
 
                 Comm.CommandText = "USE CARSERVICE";
                 Comm.ExecuteNonQuery();
 
-                Comm.CommandText = "SELECT TOP 1 FROM VEICULO_MARCA ORDER BY MARCA_NOME ASC";
+                Comm.CommandText = "SELECT TOP 1 FROM VEICULOS ORDER BY MARCA_NOME ASC";
 
                 Reader = Comm.ExecuteReader();
 
                 while (Reader.Read())
                 {
-                    items.Add(new SelectListItem
+                    items.Add(new VeiculoViewModel
                     {
-                        Text = Reader["MARCA_NOME"].ToString()
+                       Marca = Reader["MARCA_NOME"].ToString(),
+                       Modelo = Reader["MODELO_NOME"].ToString(),
+                       AnoVeiculo = Reader["ANO"].ToString()
                     });
                 }
 
@@ -109,83 +116,11 @@ namespace CarService.Models.Repository
             return items;
         }
 
-        public List<SelectListItem> PopularModelo()
-        {
-            List<SelectListItem> items = new List<SelectListItem>();
-
-            try
-            {
-                MySqlCommand Comm;
-                DatabaseConnection = conexaoBanco();
-
-                Comm = DatabaseConnection.CreateCommand();
-
-                Comm.CommandText = "USE CARSERVICE";
-                Comm.ExecuteNonQuery();
-
-                Comm.CommandText = "SELECT * FROM VEICULO_MODELO ORDER BY MODELO_NOME ASC";
-
-                Reader = Comm.ExecuteReader();
-
-                while (Reader.Read())
-                {
-                    items.Add(new SelectListItem
-                    {
-                        Text = Reader["MODELO_NOME"].ToString()
-                    });
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-            return items;
-        }
-
-        public List<SelectListItem> PopularAno()
-        {
-            List<SelectListItem> items = new List<SelectListItem>();
-
-            try
-            {
-                MySqlCommand Comm;
-                DatabaseConnection = conexaoBanco();
-
-                Comm = DatabaseConnection.CreateCommand();
-
-                Comm.CommandText = "USE CARSERVICE";
-                Comm.ExecuteNonQuery();
-
-                Comm.CommandText = "SELECT TOP 1 FROM VEICULO_ANO ORDER BY VEICULO_ANO ASC";
-
-                Reader = Comm.ExecuteReader();
-
-                while (Reader.Read())
-                {
-                    items.Add(new SelectListItem
-                    {
-                        Text = Reader["VEICULO_ANO"].ToString()
-                    });
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-            return items;
-
-        }
-
-        private MySqlConnection conexaoBanco()
+        private MySqlConnection ConectarBanco()
         {
             string Connection = "server=localhost;uid=root;pwd=1234;";
 
             try
-
             {
                 connect = new MySqlConnection();
                 connect.ConnectionString = Connection;

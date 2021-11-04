@@ -1,62 +1,65 @@
 ﻿using CarService.Models.QueryStack.ViewModels;
+using CarService.Models.ServiceStack.Entities;
 using CarService.Models.ServiceStack.Interface;
+using CarService.Models.ViewModels.Veiculo;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace CarService.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IAppServiceHandler _appService;
-        private readonly ManutencaoModel _lista;
-        private const int CAPACIDADE_MAXIMA = 10;
+        private ManutencaoViewModel _dadosManutencao;
 
-        public HomeController(IAppServiceHandler appServiceHandler, ManutencaoModel lista)
+        public HomeController(IAppServiceHandler appServiceHandler)
         {
             _appService = appServiceHandler;
-
-            lista = new ManutencaoModel()
-            {
-                VeiculoMarca = _appService.PopularMarca(),
-                VeiculoModelo = _appService.PopularModelo(),
-                VeiculoAno = _appService.PopularAno(),
-                AgendaCheia = lista.AgendaCheia,
-                AgendaVazia = lista.AgendaVazia
-            };
-
-            _lista = lista;
         }
 
-        public ActionResult Index()
+        public IActionResult Index()
         {
-            return View(_lista);
+            _dadosManutencao = new ManutencaoViewModel
+            {
+                AgendaCheia = false,
+                AgendaVazia = false,
+                Domingo = false,
+                Veiculo = RetornarTodosVeiculos().Result
+            };
+
+            return View(_dadosManutencao);
         }
 
         [HttpPost]
-        public ActionResult SaveData(ManutencaoModel dados)
+        public IActionResult AgendarServico(ManutencaoModel dados)
         {
-            int result = _appService.VerificarDataManutencao(dados.Servico.DataManutencao);
+            var result = _appService.RetornarOficinaCapacidadeMaxima(dados.DataManutencao).Result;
 
-            if (result == CAPACIDADE_MAXIMA)
+            if (!result)
             {
-                _lista.AgendaCheia = true;
-                return View("Index", _lista);
+                _dadosManutencao.AgendaCheia = true;
+                return View(nameof(Index), _dadosManutencao);
             }
             else
             {
-                if (dados.Servico.DataManutencao.DayOfWeek == DayOfWeek.Sunday)
+                if (dados.DataManutencao.DayOfWeek == DayOfWeek.Sunday)
                 {
-                    _lista.Domingo = true;
-                    return View("Index", _lista);
+                    _dadosManutencao.Domingo = true;
+                    return View(nameof(Index), _dadosManutencao);
                 }
 
-                _lista.AgendaVazia = true;
+                _dadosManutencao.AgendaVazia = true;
                 _appService.AgendarManutencao(dados);
                 _appService.EnviarEmail(dados);
-                _appService.EnviarEmailCliente(dados);
 
-                return View("Index", _lista);
+                return View(nameof(Index), _dadosManutencao);
             }
+        }
+
+        protected Task<VeiculoViewModel> RetornarTodosVeiculos()
+        {
+            return Task.FromResult(new VeiculoViewModel());
         }
     }
 }
