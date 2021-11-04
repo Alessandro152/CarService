@@ -10,7 +10,7 @@ namespace CarService.Models.ServiceStack.Interface
 {
     public interface IAppServiceHandler
     {
-        void AgendarManutencao(ManutencaoModel dados);
+        bool AgendarManutencao(ManutencaoModel dados);
 
         void EnviarEmail(ManutencaoModel dados);
 

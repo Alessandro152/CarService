@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CarService.Models.Resources {
+namespace CarService.Views.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CarService.Models.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CarService.Models.Resources.MessageResource", typeof(MessageResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CarService.Views.Resources.MessageResource", typeof(MessageResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

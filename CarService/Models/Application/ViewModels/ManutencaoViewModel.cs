@@ -1,7 +1,6 @@
 ﻿
 using CarService.Models.QueryStack.ViewModels.Cliente;
 using CarService.Models.QueryStack.ViewModels.Servico;
-using CarService.Models.QueryStack.ViewModels.Veiculo;
 using CarService.Models.ViewModels.Veiculo;
 
 namespace CarService.Models.QueryStack.ViewModels

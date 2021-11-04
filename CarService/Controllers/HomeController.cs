@@ -1,4 +1,5 @@
-﻿using CarService.Models.QueryStack.ViewModels;
+﻿using CarService.Models.Application.Interface;
+using CarService.Models.QueryStack.ViewModels;
 using CarService.Models.ServiceStack.Entities;
 using CarService.Models.ServiceStack.Interface;
 using CarService.Models.ViewModels.Veiculo;
@@ -11,11 +12,13 @@ namespace CarService.Controllers
     public class HomeController : Controller
     {
         private readonly IAppServiceHandler _appService;
+        private readonly IUnitOfWork _unitOfWork;
         private ManutencaoViewModel _dadosManutencao;
 
-        public HomeController(IAppServiceHandler appServiceHandler)
+        public HomeController(IAppServiceHandler appServiceHandler, IUnitOfWork unitOfWork)
         {
             _appService = appServiceHandler;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
@@ -50,7 +53,17 @@ namespace CarService.Controllers
                 }
 
                 _dadosManutencao.AgendaVazia = true;
-                _appService.AgendarManutencao(dados);
+                result = _appService.AgendarManutencao(dados);
+
+                if (result) 
+                {
+                    _unitOfWork.Commit();
+                }
+                else
+                {
+                    _unitOfWork.RollBack();
+                }
+
                 _appService.EnviarEmail(dados);
 
                 return View(nameof(Index), _dadosManutencao);
